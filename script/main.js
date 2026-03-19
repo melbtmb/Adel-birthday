@@ -1,4 +1,4 @@
-// 🎵 MUSIC TRIGGER
+// trigger to play music in the background with sweetalert
 window.addEventListener("load", () => {
   Swal.fire({
     title: "Do you want to play music in the background?",
@@ -11,129 +11,71 @@ window.addEventListener("load", () => {
   }).then((result) => {
     if (result.isConfirmed) {
       document.querySelector(".song").play();
+      animationTimeline();
+    } else {
+      animationTimeline();
     }
-    animationTimeline();
   });
 });
 
-
-// 🎂 DATE + AGE CINEMATIC ANIMATION
 document.addEventListener("DOMContentLoaded", function () {
-
   const dayElement = document.getElementById("day");
   const monthElement = document.getElementById("month");
   const yearElement = document.getElementById("year");
   const ageElement = document.getElementById("age");
 
   const months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
-  const birthDate = new Date(1996, 2, 21); // 21 March 1996
-  const targetDate = new Date(2026, 2, 21); // 21 March 2026
+  const targetDay = 21;
+  const targetMonthIndex = 2; // March
+  const targetYear = 2026;
+  const birthYear = 1996;
 
-  let currentDate = new Date(birthDate);
+  let currentDay = 1;
+  let currentMonthIndex = 0;
+  let currentYear = birthYear;
+  let currentAge = 0;
 
-  function calculateAge(from, to) {
-    let years = to.getFullYear() - from.getFullYear();
-    let months = to.getMonth() - from.getMonth();
-    let days = to.getDate() - from.getDate();
+  const interval = setInterval(() => {
+    // Update day, month, year, and age in the DOM
+    dayElement.textContent = currentDay;
+    monthElement.textContent = months[currentMonthIndex];
+    yearElement.textContent = currentYear;
+    ageElement.textContent = currentAge;
 
-    if (days < 0) {
-      months--;
-      const prevMonth = new Date(to.getFullYear(), to.getMonth(), 0);
-      days += prevMonth.getDate();
-    }
-
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-
-    return { years, months, days };
-  }
-
-  function animateDate() {
-
-    // Update UI
-    dayElement.textContent = currentDate.getDate();
-    monthElement.textContent = months[currentDate.getMonth()];
-    yearElement.textContent = currentDate.getFullYear();
-
-    const age = calculateAge(birthDate, currentDate);
-
-    // 🎯 FINAL MOMENT
-    if (currentDate >= targetDate) {
-      ageElement.textContent = "30 🎂";
-
-      // 💓 Heartbeat effect
-      ageElement.style.transform = "scale(1.3)";
-      setTimeout(() => {
-        ageElement.style.transform = "scale(1)";
-      }, 300);
-
-      // 🎉 Confetti burst
-      for (let i = 0; i < 30; i++) {
-        let confetti = document.createElement("div");
-        confetti.style.position = "fixed";
-        confetti.style.width = "8px";
-        confetti.style.height = "8px";
-        confetti.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
-        confetti.style.top = "50%";
-        confetti.style.left = "50%";
-        confetti.style.borderRadius = "50%";
-        confetti.style.zIndex = "9999";
-
-        document.body.appendChild(confetti);
-
-        let x = (Math.random() - 0.5) * 600;
-        let y = (Math.random() - 0.5) * 600;
-
-        confetti.animate([
-          { transform: "translate(0,0)", opacity: 1 },
-          { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
-        ], {
-          duration: 1500,
-          easing: "ease-out"
-        });
-
-        setTimeout(() => confetti.remove(), 1500);
-      }
-
-      return;
-    }
-
-    // Live age display
-    ageElement.textContent = `${age.years}y ${age.months}m ${age.days}d`;
-
-    // Move forward one day
-    currentDate.setDate(currentDate.getDate() + 1);
-
-    // 🎬 SPEED RAMP (cinematic)
-    let remaining = targetDate - currentDate;
-
-    let speed;
-    if (remaining > 1000 * 60 * 60 * 24 * 365 * 10) {
-      speed = 5; // very fast
-    } else if (remaining > 1000 * 60 * 60 * 24 * 365 * 2) {
-      speed = 15; // medium
-    } else if (remaining > 1000 * 60 * 60 * 24 * 30) {
-      speed = 40; // slower
+    // Smoothly increment day, month, year, and age
+    if (currentDay < targetDay) {
+      currentDay++;
+    } else if (currentMonthIndex < targetMonthIndex) {
+      currentDay = targetDay; // Fix day
+      currentMonthIndex++;
+    } else if (currentYear < targetYear) {
+      currentMonthIndex = targetMonthIndex; // Fix month
+      currentYear++;
+      currentAge++;
     } else {
-      speed = 120; // 🥹 very slow near birthday
+      // Stop animation when target is reached
+      clearInterval(interval);
     }
-
-    setTimeout(animateDate, speed);
-  }
-
-  animateDate();
+  }, 250); // Smoother speed adjustment
 });
 
-
-// 🎬 ANIMATION TIMELINE (UNCHANGED)
+// animation timeline
 const animationTimeline = () => {
-
+  // split chars that needs to be animated individually
   const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
   const hbd = document.getElementsByClassName("wish-hbd")[0];
 
@@ -159,43 +101,253 @@ const animationTimeline = () => {
     skewX: "-15deg",
   };
 
+  // timeline
   const tl = new TimelineMax();
 
-  tl.to(".container", 0.6, { visibility: "visible" })
-    .from(".one", 0.9, { opacity: 0, y: 10 })
-    .from(".two", 0.9, { opacity: 0, y: 10 })
-    .to(".one", 0.7, { opacity: 0, y: 10 }, "+=3.5")
-    .to(".two", 0.7, { opacity: 0, y: 10 }, "-=1")
-    .from(".three", 0.7, { opacity: 0, y: 10 })
-    .to(".three", 0.7, { opacity: 0, y: 10 }, "+=3")
-    .from(".four", 0.7, { scale: 0.2, opacity: 0 })
-    .from(".fake-btn", 0.3, { scale: 0.2, opacity: 0 })
-    .staggerTo(".hbd-chatbox span", 1.5, { visibility: "visible" }, 0.05)
-    .to(".fake-btn", 0.1, { backgroundColor: "rgb(127, 206, 248)" }, "+=4")
-    .to(".four", 0.5, { scale: 0.2, opacity: 0, y: -150 }, "+=1")
+  tl.to(".container", 0.6, {
+    visibility: "visible",
+  })
+    .from(".one", 0.9, {
+      opacity: 0,
+      y: 10,
+    })
+    .from(".two", 0.9, {
+      opacity: 0,
+      y: 10,
+    })
+    .to(
+      ".one",
+      0.7,
+      {
+        opacity: 0,
+        y: 10,
+      },
+      "+=3.5"
+    )
+    .to(
+      ".two",
+      0.7,
+      {
+        opacity: 0,
+        y: 10,
+      },
+      "-=1"
+    )
+    .from(".three", 0.7, {
+      opacity: 0,
+      y: 10,
+    })
+    .to(
+      ".three",
+      0.7,
+      {
+        opacity: 0,
+        y: 10,
+      },
+      "+=3"
+    )
+    .from(".four", 0.7, {
+      scale: 0.2,
+      opacity: 0,
+    })
+    .from(".fake-btn", 0.3, {
+      scale: 0.2,
+      opacity: 0,
+    })
+    .staggerTo(
+      ".hbd-chatbox span",
+      1.5,
+      {
+        visibility: "visible",
+      },
+      0.05
+    )
+    .to(
+      ".fake-btn",
+      0.1,
+      {
+        backgroundColor: "rgb(127, 206, 248)",
+      },
+      "+=4"
+    )
+    .to(
+      ".four",
+      0.5,
+      {
+        scale: 0.2,
+        opacity: 0,
+        y: -150,
+      },
+      "+=1"
+    )
     .from(".idea-1", 0.7, ideaTextTrans)
     .to(".idea-1", 0.7, ideaTextTransLeave, "+=2.5")
     .from(".idea-2", 0.7, ideaTextTrans)
     .to(".idea-2", 0.7, ideaTextTransLeave, "+=2.5")
     .from(".idea-3", 0.7, ideaTextTrans)
     .to(".idea-3 strong", 0.5, {
-      scale: 1.2, x: 10, backgroundColor: "rgb(21,161,237)", color: "#fff"
+      scale: 1.2,
+      x: 10,
+      backgroundColor: "rgb(21, 161, 237)",
+      color: "#fff",
     })
     .to(".idea-3", 0.7, ideaTextTransLeave, "+=2.5")
     .from(".idea-4", 0.7, ideaTextTrans)
     .to(".idea-4", 0.7, ideaTextTransLeave, "+=2.5")
-    .from(".idea-5", 0.7, { rotationX:15, rotationZ:-10, y:50, opacity:0 }, "+=1.5")
-    .to(".idea-5", 0.7, { scale:0.2, opacity:0 }, "+=2")
-    .staggerFrom(".idea-6 span", 0.8, { scale:3, opacity:0 }, 0.2)
-    .staggerTo(".idea-6 span", 0.8, { scale:3, opacity:0 }, 0.2, "+=1.5")
-    .staggerFromTo(".baloons img", 2.5, { y:1400 }, { y:-1000 }, 0.2)
-    .from(".profile-picture", 0.5, { scale:3.5, opacity:0 }, "-=2")
-    .staggerFrom(".wish-hbd span", 0.7, { opacity:0, y:-50 }, 0.1)
-    .from(".wish h5", 0.5, { opacity:0, y:10 })
-    .to(".six", 0.5, { opacity:0, y:30 })
-    .staggerFrom(".nine p", 1, ideaTextTrans, 1.2);
+    .from(
+      ".idea-5",
+      0.7,
+      {
+        rotationX: 15,
+        rotationZ: -10,
+        skewY: "-5deg",
+        y: 50,
+        z: 10,
+        opacity: 0,
+      },
+      "+=1.5"
+    )
+    .to(
+      ".idea-5 span",
+      0.7,
+      {
+        rotation: 90,
+        x: 8,
+      },
+      "+=1.4"
+    )
+    .to(
+      ".idea-5",
+      0.7,
+      {
+        scale: 0.2,
+        opacity: 0,
+      },
+      "+=2"
+    )
+    .staggerFrom(
+      ".idea-6 span",
+      0.8,
+      {
+        scale: 3,
+        opacity: 0,
+        rotation: 15,
+        ease: Expo.easeOut,
+      },
+      0.2
+    )
+    .staggerTo(
+      ".idea-6 span",
+      0.8,
+      {
+        scale: 3,
+        opacity: 0,
+        rotation: -15,
+        ease: Expo.easeOut,
+      },
+      0.2,
+      "+=1.5"
+    )
+    .staggerFromTo(
+      ".baloons img",
+      2.5,
+      {
+        opacity: 0.9,
+        y: 1400,
+      },
+      {
+        opacity: 1,
+        y: -1000,
+      },
+      0.2
+    )
+    .from(
+      ".profile-picture",
+      0.5,
+      {
+        scale: 3.5,
+        opacity: 0,
+        x: 25,
+        y: -25,
+        rotationZ: -45,
+      },
+      "-=2"
+    )
+    .from(".hat", 0.5, {
+      x: -100,
+      y: 350,
+      rotation: -180,
+      opacity: 0,
+    })
+    .staggerFrom(
+      ".wish-hbd span",
+      0.7,
+      {
+        opacity: 0,
+        y: -50,
+        // scale: 0.3,
+        rotation: 150,
+        skewX: "30deg",
+        ease: Elastic.easeOut.config(1, 0.5),
+      },
+      0.1
+    )
+    .staggerFromTo(
+      ".wish-hbd span",
+      0.7,
+      {
+        scale: 1.4,
+        rotationY: 150,
+      },
+      {
+        scale: 1,
+        rotationY: 0,
+        color: "#ff69b4",
+        ease: Expo.easeOut,
+      },
+      0.1,
+      "party"
+    )
+    .from(
+      ".wish h5",
+      0.5,
+      {
+        opacity: 0,
+        y: 10,
+        skewX: "-15deg",
+      },
+      "party"
+    )
+    .staggerTo(
+      ".eight svg",
+      1.5,
+      {
+        visibility: "visible",
+        opacity: 0,
+        scale: 80,
+        repeat: 3,
+        repeatDelay: 1.4,
+      },
+      0.3
+    )
+    .to(".six", 0.5, {
+      opacity: 0,
+      y: 30,
+      zIndex: "-1",
+    })
+    .staggerFrom(".nine p", 1, ideaTextTrans, 1.2)
+    .to(
+      ".last-smile",
+      0.5,
+      {
+        rotation: 90,
+      },
+      "+=1"
+    );
 
-  document.getElementById("replay").addEventListener("click", () => {
+  // Restart Animation on click
+  const replyBtn = document.getElementById("replay");
+  replyBtn.addEventListener("click", () => {
     tl.restart();
   });
 };
