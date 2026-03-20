@@ -24,70 +24,35 @@ document.addEventListener("DOMContentLoaded", function () {
   const yearElement = document.getElementById("year");
   const ageElement = document.getElementById("age");
 
-  const months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
-  ];
-
-  const targetDay = 21;
-  const targetMonthIndex = 2; // ✅ March (0-based)
-  const targetYear = 2026;
   const birthYear = 1996;
+  const targetYear = 2026;
+  const slowdownStart = targetYear - 5; // slow down from 2021
 
-  let currentDay = 1;
-  let currentMonthIndex = 0;
+  // Lock day and month immediately — no animation needed
+  dayElement.textContent = "21";
+  monthElement.textContent = "March";
+
   let currentYear = birthYear;
-  let currentAge = 0;
+  yearElement.textContent = currentYear;
+  ageElement.textContent = 0;
 
-  const interval = setInterval(() => {
+  function step() {
+    if (currentYear >= targetYear) return;
 
-    // Update UI
-    dayElement.textContent = currentDay;
-    monthElement.textContent = months[currentMonthIndex];
+    currentYear++;
     yearElement.textContent = currentYear;
-    ageElement.textContent = currentAge;
+    ageElement.textContent = currentYear - birthYear;
 
-    // 💓 FINAL STATE + HEARTBEAT
-    if (
-      currentDay === targetDay &&
-      currentMonthIndex === targetMonthIndex &&
-      currentYear === targetYear
-    ) {
-      ageElement.textContent = currentAge + " 🎂";
-
-      // Heartbeat effect 💖
-      ageElement.style.transition = "transform 0.3s ease";
-
-      let beats = 0;
-      const heartbeat = setInterval(() => {
-        ageElement.style.transform = "scale(1.25)";
-
-        setTimeout(() => {
-          ageElement.style.transform = "scale(1)";
-        }, 150);
-
-        beats++;
-        if (beats === 3) clearInterval(heartbeat); // 3 beats
-      }, 300);
-
-      clearInterval(interval);
-      return;
+    if (currentYear < targetYear) {
+      const isSlow = currentYear >= slowdownStart;
+      const delay = isSlow ? 250 + (currentYear - slowdownStart) * 150 : 80;
+      setTimeout(step, delay);
     }
+  }
 
-    // Normal progression
-    if (currentDay < targetDay) {
-      currentDay++;
-    } else if (currentMonthIndex < targetMonthIndex) {
-      currentDay = 1; // ✅ reset day properly
-      currentMonthIndex++;
-    } else if (currentYear < targetYear) {
-      currentMonthIndex = 0; // ✅ reset month properly
-      currentYear++;
-      currentAge++;
-    }
-
-  }, 250);
+  setTimeout(step, 80);
 });
+
 
 // animation timeline
 const animationTimeline = () => {
