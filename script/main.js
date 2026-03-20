@@ -25,22 +25,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const ageElement = document.getElementById("age");
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
   ];
 
   const targetDay = 21;
-  const targetMonthIndex = 2; // March
+  const targetMonthIndex = 2; // ✅ March (0-based)
   const targetYear = 2026;
   const birthYear = 1996;
 
@@ -50,27 +40,53 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentAge = 0;
 
   const interval = setInterval(() => {
-    // Update day, month, year, and age in the DOM
+
+    // Update UI
     dayElement.textContent = currentDay;
     monthElement.textContent = months[currentMonthIndex];
     yearElement.textContent = currentYear;
     ageElement.textContent = currentAge;
 
-    // Smoothly increment day, month, year, and age
+    // 💓 FINAL STATE + HEARTBEAT
+    if (
+      currentDay === targetDay &&
+      currentMonthIndex === targetMonthIndex &&
+      currentYear === targetYear
+    ) {
+      ageElement.textContent = currentAge + " 🎂";
+
+      // Heartbeat effect 💖
+      ageElement.style.transition = "transform 0.3s ease";
+
+      let beats = 0;
+      const heartbeat = setInterval(() => {
+        ageElement.style.transform = "scale(1.25)";
+
+        setTimeout(() => {
+          ageElement.style.transform = "scale(1)";
+        }, 150);
+
+        beats++;
+        if (beats === 3) clearInterval(heartbeat); // 3 beats
+      }, 300);
+
+      clearInterval(interval);
+      return;
+    }
+
+    // Normal progression
     if (currentDay < targetDay) {
       currentDay++;
     } else if (currentMonthIndex < targetMonthIndex) {
-      currentDay = targetDay; // Fix day
+      currentDay = 1; // ✅ reset day properly
       currentMonthIndex++;
     } else if (currentYear < targetYear) {
-      currentMonthIndex = targetMonthIndex; // Fix month
+      currentMonthIndex = 0; // ✅ reset month properly
       currentYear++;
       currentAge++;
-    } else {
-      // Stop animation when target is reached
-      clearInterval(interval);
     }
-  }, 250); // Smoother speed adjustment
+
+  }, 250);
 });
 
 // animation timeline
