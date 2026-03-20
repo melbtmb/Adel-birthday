@@ -52,13 +52,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-<div class="date-container">
-    <span id="day">21</span> <span id="month">March</span> <span id="year">1996</span>
-</div>
-<div class="age-container">
-    <p>🎂<span id="age">0</span> Years</p>
-</div>
-
 
 // animation timeline
 const animationTimeline = () => {
