@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const targetYear = 2026;
   const slowdownStart = targetYear - 5; // slow down from 2021
 
-  // Lock day and month immediately — no animation needed
+  // Lock day and month immediately
   dayElement.textContent = "21";
   monthElement.textContent = "March";
 
@@ -43,15 +43,21 @@ document.addEventListener("DOMContentLoaded", function () {
     yearElement.textContent = currentYear;
     ageElement.textContent = currentYear - birthYear;
 
-    if (currentYear < targetYear) {
-      const isSlow = currentYear >= slowdownStart;
-      const delay = isSlow ? 250 + (currentYear - slowdownStart) * 150 : 80;
-      setTimeout(step, delay);
-    }
+    const isSlow = currentYear >= slowdownStart;
+    const delay = isSlow ? 250 + (currentYear - slowdownStart) * 150 : 80;
+    setTimeout(step, delay);
   }
 
   setTimeout(step, 80);
 });
+
+
+<div class="date-container">
+    <span id="day">21</span> <span id="month">March</span> <span id="year">1996</span>
+</div>
+<div class="age-container">
+    <p>🎂<span id="age">0</span> Years</p>
+</div>
 
 
 // animation timeline
